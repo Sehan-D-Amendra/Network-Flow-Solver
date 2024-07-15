@@ -2,16 +2,16 @@ import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Function to load external CSS file
+
 def load_css(file_name):
     with open(file_name, 'r') as f:
         css = f.read()
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-# Load external CSS
+
 load_css('style.css')
 
-# Function to visualize the graph
+
 def visualize_graph(G):
     pos = nx.spring_layout(G)
     plt.figure(figsize=(8, 6))
@@ -20,17 +20,17 @@ def visualize_graph(G):
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels, font_color='red')
     st.pyplot(plt)
 
-# Function to solve maximum flow
+
 def solve_maximum_flow():
     st.title("Maximum Flow Problem Solver")
 
     st.sidebar.header("Graph Input")
     st.sidebar.markdown("---")
 
-    # Number of nodes
+    
     num_nodes = st.sidebar.number_input("Number of nodes", min_value=2, value=7, key='maxflow_num_nodes')
 
-    # Add edges
+   
     edges = []
     for i in range(1, num_nodes + 1):
         for j in range(1, num_nodes + 1):
@@ -41,7 +41,7 @@ def solve_maximum_flow():
                 if capacity > 0:
                     edges.append((u, v, capacity))
 
-    # Create directed graph
+    
     G = nx.DiGraph()
     for u, v, capacity in edges:
         G.add_edge(u, v, capacity=capacity)
@@ -53,7 +53,7 @@ def solve_maximum_flow():
         visualize_graph(G)
 
     if st.sidebar.button("Solve Maximum Flow"):
-        # Compute maximum flow
+        
         try:
             flow_value, flow_dict = nx.maximum_flow(G, source, target)
             st.success(f"Maximum Flow: {flow_value}")
@@ -68,14 +68,14 @@ def solve_maximum_flow():
         except nx.NetworkXError as e:
             st.error(f"Error: {e}")
 
-# Function to solve minimum cost flow
+
 def solve_minimum_cost_flow():
     st.title("Minimum Cost Flow Problem Solver")
 
     st.sidebar.header("Graph Input")
     st.sidebar.markdown("---")
 
-    # Set up the directed network with node demands and edge costs
+    
     num_nodes = st.sidebar.number_input("Number of nodes", min_value=2, value=5, key='mincost_num_nodes')
 
     nodes = []
@@ -93,7 +93,7 @@ def solve_minimum_cost_flow():
                 if weight != 0 or capacity != 999999:
                     edges.append((i, j, weight, capacity))
 
-    # Create directed graph
+    
     G = nx.DiGraph()
     for node, demand, color in nodes:
         G.add_node(node, demand=demand, color=color)
@@ -101,7 +101,7 @@ def solve_minimum_cost_flow():
     for u, v, weight, capacity in edges:
         G.add_edge(u, v, weight=weight, capacity=capacity)
 
-    # Check if the sum of demands is zero
+    
     total_demand = sum(demand for _, demand, _ in nodes)
     if total_demand != 0:
         st.error("Error: The sum of demands must be zero. Please adjust the node demands.")
@@ -118,7 +118,7 @@ def solve_minimum_cost_flow():
 
     if st.sidebar.button("Solve Minimum Cost Flow"):
         try:
-            # Solve the model using network simplex method
+           
             flowCost, flowDict = nx.network_simplex(G)
             st.success(f'Minimum cost: {flowCost}')
 
@@ -138,7 +138,7 @@ def solve_minimum_cost_flow():
         except nx.NetworkXUnfeasible:
             st.error("No feasible solution: Check your demands and capacities.")
 
-# Streamlit app with multiple pages
+
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Maximum Flow", "Minimum Cost Flow"])
 
@@ -147,7 +147,7 @@ if page == "Maximum Flow":
 elif page == "Minimum Cost Flow":
     solve_minimum_cost_flow()
 
-# Add footer
+
 footer = """
 <div class="footer">
     <p>Developed By Sehan D Amendra</p>
